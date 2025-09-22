@@ -134,7 +134,7 @@ func EgressPolicyListDataSourceSchema(ctx context.Context) schema.Schema {
 										"dscp_map": schema.ListNestedAttribute{
 											NestedObject: schema.NestedAttributeObject{
 												Attributes: map[string]schema.Attribute{
-													"drop_probability_1": schema.ListNestedAttribute{
+													"drop_probability": schema.ListNestedAttribute{
 														NestedObject: schema.NestedAttributeObject{
 															Attributes: map[string]schema.Attribute{
 																"dscp": schema.Int64Attribute{
@@ -405,7 +405,7 @@ func EgressPolicyListDataSourceSchema(ctx context.Context) schema.Schema {
 			"kind": schema.StringAttribute{
 				Computed: true,
 			},
-			"labelselector": schema.StringAttribute{
+			"label_selector": schema.StringAttribute{
 				Optional:            true,
 				Computed:            true,
 				Description:         "a label selector string to filter the results based on CR labels",
@@ -426,7 +426,7 @@ type EgressPolicyListModel struct {
 	Filter        types.String `tfsdk:"filter"`
 	Items         types.List   `tfsdk:"items"`
 	Kind          types.String `tfsdk:"kind"`
-	Labelselector types.String `tfsdk:"labelselector"`
+	LabelSelector types.String `tfsdk:"label_selector"`
 	Namespace     types.String `tfsdk:"namespace"`
 }
 
@@ -3922,7 +3922,7 @@ func (t DscpMapType) ValueFromObject(ctx context.Context, in basetypes.ObjectVal
 
 	attributes := in.Attributes()
 
-	dropProbability1Attribute, ok := attributes["drop_probability_1"]
+	dropProbability1Attribute, ok := attributes["drop_probability"]
 
 	if !ok {
 		diags.AddError(
@@ -4051,7 +4051,7 @@ func NewDscpMapValue(attributeTypes map[string]attr.Type, attributes map[string]
 		return NewDscpMapValueUnknown(), diags
 	}
 
-	dropProbability1Attribute, ok := attributes["drop_probability_1"]
+	dropProbability1Attribute, ok := attributes["drop_probability"]
 
 	if !ok {
 		diags.AddError(
@@ -4185,7 +4185,7 @@ func (t DscpMapType) ValueType(ctx context.Context) attr.Value {
 var _ basetypes.ObjectValuable = DscpMapValue{}
 
 type DscpMapValue struct {
-	DropProbability1  basetypes.ListValue  `tfsdk:"drop_probability_1"`
+	DropProbability1  basetypes.ListValue  `tfsdk:"drop_probability"`
 	Dscp              basetypes.Int64Value `tfsdk:"dscp"`
 	ForwardingClasses basetypes.ListValue  `tfsdk:"forwarding_classes"`
 	state             attr.ValueState
@@ -4197,7 +4197,7 @@ func (v DscpMapValue) ToTerraformValue(ctx context.Context) (tftypes.Value, erro
 	var val tftypes.Value
 	var err error
 
-	attrTypes["drop_probability_1"] = basetypes.ListType{
+	attrTypes["drop_probability"] = basetypes.ListType{
 		ElemType: DropProbability1Value{}.Type(ctx),
 	}.TerraformType(ctx)
 	attrTypes["dscp"] = basetypes.Int64Type{}.TerraformType(ctx)
@@ -4217,7 +4217,7 @@ func (v DscpMapValue) ToTerraformValue(ctx context.Context) (tftypes.Value, erro
 			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
 		}
 
-		vals["drop_probability_1"] = val
+		vals["drop_probability"] = val
 
 		val, err = v.Dscp.ToTerraformValue(ctx)
 
@@ -4307,7 +4307,7 @@ func (v DscpMapValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue,
 
 	if diags.HasError() {
 		return types.ObjectUnknown(map[string]attr.Type{
-			"drop_probability_1": basetypes.ListType{
+			"drop_probability": basetypes.ListType{
 				ElemType: DropProbability1Value{}.Type(ctx),
 			},
 			"dscp": basetypes.Int64Type{},
@@ -4318,7 +4318,7 @@ func (v DscpMapValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue,
 	}
 
 	attributeTypes := map[string]attr.Type{
-		"drop_probability_1": basetypes.ListType{
+		"drop_probability": basetypes.ListType{
 			ElemType: DropProbability1Value{}.Type(ctx),
 		},
 		"dscp": basetypes.Int64Type{},
@@ -4338,7 +4338,7 @@ func (v DscpMapValue) ToObjectValue(ctx context.Context) (basetypes.ObjectValue,
 	objVal, diags := types.ObjectValue(
 		attributeTypes,
 		map[string]attr.Value{
-			"drop_probability_1": dropProbability1,
+			"drop_probability":   dropProbability1,
 			"dscp":               v.Dscp,
 			"forwarding_classes": forwardingClassesVal,
 		})
@@ -4386,7 +4386,7 @@ func (v DscpMapValue) Type(ctx context.Context) attr.Type {
 
 func (v DscpMapValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
 	return map[string]attr.Type{
-		"drop_probability_1": basetypes.ListType{
+		"drop_probability": basetypes.ListType{
 			ElemType: DropProbability1Value{}.Type(ctx),
 		},
 		"dscp": basetypes.Int64Type{},

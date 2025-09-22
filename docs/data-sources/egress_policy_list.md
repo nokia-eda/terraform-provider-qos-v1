@@ -23,7 +23,7 @@ description: |-
 
 - `fields` (String) a comma-separated list of resource fields to fetch/return.  If unspecified, all fields are fetched.  If empty, only key-fields are fetched.
 - `filter` (String) an EQL "where" expression that will be used to filter the set of resources returned.
-- `labelselector` (String) a label selector string to filter the results based on CR labels
+- `label_selector` (String) a label selector string to filter the results based on CR labels
 
 ### Read-Only
 
@@ -95,12 +95,12 @@ Optional:
 
 Optional:
 
-- `drop_probability_1` (Attributes List) A drop probability within the forwarding class for which a different remarking is desired. (see [below for nested schema](#nestedatt--items--spec--dscp_rewrite_policy--dscp_map--drop_probability_1))
+- `drop_probability` (Attributes List) A drop probability within the forwarding class for which a different remarking is desired. (see [below for nested schema](#nestedatt--items--spec--dscp_rewrite_policy--dscp_map--drop_probability))
 - `dscp` (Number) The DSCP value to be used for all packets associated with the forwarding class, except those with a drop-probability-specific or profile-specific override.
 - `forwarding_classes` (List of String) The forwarding class matched to apply the rewrite policy.
 
-<a id="nestedatt--items--spec--dscp_rewrite_policy--dscp_map--drop_probability_1"></a>
-### Nested Schema for `items.spec.dscp_rewrite_policy.dscp_map.drop_probability_1`
+<a id="nestedatt--items--spec--dscp_rewrite_policy--dscp_map--drop_probability"></a>
+### Nested Schema for `items.spec.dscp_rewrite_policy.dscp_map.drop_probability`
 
 Optional:
 

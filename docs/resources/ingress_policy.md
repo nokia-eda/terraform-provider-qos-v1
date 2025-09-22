@@ -80,7 +80,7 @@ Required:
 
 Optional:
 
-- `direct_to_pfcqueue` (Boolean) In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping.
+- `direct_to_pfc_queue` (Boolean) In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping.
 - `drop_probability_level` (String) Assign matching packets to the specified drop probability level.
 - `forwarding_class` (String) Reference to a ForwardingClass resource to which the value is mapped.
 

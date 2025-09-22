@@ -99,11 +99,11 @@ Required:
 
 Optional:
 
-- `drop_probability_1` (Attributes List) A drop probability within the forwarding class for which a different remarking is desired. (see [below for nested schema](#nestedatt--spec--dscp_rewrite_policy--dscp_map--drop_probability_1))
+- `drop_probability` (Attributes List) A drop probability within the forwarding class for which a different remarking is desired. (see [below for nested schema](#nestedatt--spec--dscp_rewrite_policy--dscp_map--drop_probability))
 - `dscp` (Number) The DSCP value to be used for all packets associated with the forwarding class, except those with a drop-probability-specific or profile-specific override.
 
-<a id="nestedatt--spec--dscp_rewrite_policy--dscp_map--drop_probability_1"></a>
-### Nested Schema for `spec.dscp_rewrite_policy.dscp_map.drop_probability_1`
+<a id="nestedatt--spec--dscp_rewrite_policy--dscp_map--drop_probability"></a>
+### Nested Schema for `spec.dscp_rewrite_policy.dscp_map.drop_probability`
 
 Optional:
 

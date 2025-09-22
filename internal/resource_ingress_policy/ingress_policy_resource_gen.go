@@ -91,7 +91,7 @@ func IngressPolicyResourceSchema(ctx context.Context) schema.Schema {
 									Attributes: map[string]schema.Attribute{
 										"dot1p_policy_entry": schema.SingleNestedAttribute{
 											Attributes: map[string]schema.Attribute{
-												"direct_to_pfcqueue": schema.BoolAttribute{
+												"direct_to_pfc_queue": schema.BoolAttribute{
 													Optional:            true,
 													Description:         "In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping.",
 													MarkdownDescription: "In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping.",
@@ -3239,22 +3239,22 @@ func (t Dot1pPolicyEntryType) ValueFromObject(ctx context.Context, in basetypes.
 
 	attributes := in.Attributes()
 
-	directToPfcqueueAttribute, ok := attributes["direct_to_pfcqueue"]
+	directToPfcQueueAttribute, ok := attributes["direct_to_pfc_queue"]
 
 	if !ok {
 		diags.AddError(
 			"Attribute Missing",
-			`direct_to_pfcqueue is missing from object`)
+			`direct_to_pfc_queue is missing from object`)
 
 		return nil, diags
 	}
 
-	directToPfcqueueVal, ok := directToPfcqueueAttribute.(basetypes.BoolValue)
+	directToPfcQueueVal, ok := directToPfcQueueAttribute.(basetypes.BoolValue)
 
 	if !ok {
 		diags.AddError(
 			"Attribute Wrong Type",
-			fmt.Sprintf(`direct_to_pfcqueue expected to be basetypes.BoolValue, was: %T`, directToPfcqueueAttribute))
+			fmt.Sprintf(`direct_to_pfc_queue expected to be basetypes.BoolValue, was: %T`, directToPfcQueueAttribute))
 	}
 
 	dropProbabilityLevelAttribute, ok := attributes["drop_probability_level"]
@@ -3316,7 +3316,7 @@ func (t Dot1pPolicyEntryType) ValueFromObject(ctx context.Context, in basetypes.
 	}
 
 	return Dot1pPolicyEntryValue{
-		DirectToPfcqueue:     directToPfcqueueVal,
+		DirectToPfcQueue:     directToPfcQueueVal,
 		DropProbabilityLevel: dropProbabilityLevelVal,
 		ForwardingClass:      forwardingClassVal,
 		PcpValues:            pcpValuesVal,
@@ -3387,22 +3387,22 @@ func NewDot1pPolicyEntryValue(attributeTypes map[string]attr.Type, attributes ma
 		return NewDot1pPolicyEntryValueUnknown(), diags
 	}
 
-	directToPfcqueueAttribute, ok := attributes["direct_to_pfcqueue"]
+	directToPfcQueueAttribute, ok := attributes["direct_to_pfc_queue"]
 
 	if !ok {
 		diags.AddError(
 			"Attribute Missing",
-			`direct_to_pfcqueue is missing from object`)
+			`direct_to_pfc_queue is missing from object`)
 
 		return NewDot1pPolicyEntryValueUnknown(), diags
 	}
 
-	directToPfcqueueVal, ok := directToPfcqueueAttribute.(basetypes.BoolValue)
+	directToPfcQueueVal, ok := directToPfcQueueAttribute.(basetypes.BoolValue)
 
 	if !ok {
 		diags.AddError(
 			"Attribute Wrong Type",
-			fmt.Sprintf(`direct_to_pfcqueue expected to be basetypes.BoolValue, was: %T`, directToPfcqueueAttribute))
+			fmt.Sprintf(`direct_to_pfc_queue expected to be basetypes.BoolValue, was: %T`, directToPfcQueueAttribute))
 	}
 
 	dropProbabilityLevelAttribute, ok := attributes["drop_probability_level"]
@@ -3464,7 +3464,7 @@ func NewDot1pPolicyEntryValue(attributeTypes map[string]attr.Type, attributes ma
 	}
 
 	return Dot1pPolicyEntryValue{
-		DirectToPfcqueue:     directToPfcqueueVal,
+		DirectToPfcQueue:     directToPfcQueueVal,
 		DropProbabilityLevel: dropProbabilityLevelVal,
 		ForwardingClass:      forwardingClassVal,
 		PcpValues:            pcpValuesVal,
@@ -3540,7 +3540,7 @@ func (t Dot1pPolicyEntryType) ValueType(ctx context.Context) attr.Value {
 var _ basetypes.ObjectValuable = Dot1pPolicyEntryValue{}
 
 type Dot1pPolicyEntryValue struct {
-	DirectToPfcqueue     basetypes.BoolValue   `tfsdk:"direct_to_pfcqueue"`
+	DirectToPfcQueue     basetypes.BoolValue   `tfsdk:"direct_to_pfc_queue"`
 	DropProbabilityLevel basetypes.StringValue `tfsdk:"drop_probability_level"`
 	ForwardingClass      basetypes.StringValue `tfsdk:"forwarding_class"`
 	PcpValues            basetypes.ListValue   `tfsdk:"pcp_values"`
@@ -3553,7 +3553,7 @@ func (v Dot1pPolicyEntryValue) ToTerraformValue(ctx context.Context) (tftypes.Va
 	var val tftypes.Value
 	var err error
 
-	attrTypes["direct_to_pfcqueue"] = basetypes.BoolType{}.TerraformType(ctx)
+	attrTypes["direct_to_pfc_queue"] = basetypes.BoolType{}.TerraformType(ctx)
 	attrTypes["drop_probability_level"] = basetypes.StringType{}.TerraformType(ctx)
 	attrTypes["forwarding_class"] = basetypes.StringType{}.TerraformType(ctx)
 	attrTypes["pcp_values"] = basetypes.ListType{
@@ -3566,13 +3566,13 @@ func (v Dot1pPolicyEntryValue) ToTerraformValue(ctx context.Context) (tftypes.Va
 	case attr.ValueStateKnown:
 		vals := make(map[string]tftypes.Value, 4)
 
-		val, err = v.DirectToPfcqueue.ToTerraformValue(ctx)
+		val, err = v.DirectToPfcQueue.ToTerraformValue(ctx)
 
 		if err != nil {
 			return tftypes.NewValue(objectType, tftypes.UnknownValue), err
 		}
 
-		vals["direct_to_pfcqueue"] = val
+		vals["direct_to_pfc_queue"] = val
 
 		val, err = v.DropProbabilityLevel.ToTerraformValue(ctx)
 
@@ -3657,7 +3657,7 @@ func (v Dot1pPolicyEntryValue) ToObjectValue(ctx context.Context) (basetypes.Obj
 	}
 
 	attributeTypes := map[string]attr.Type{
-		"direct_to_pfcqueue":     basetypes.BoolType{},
+		"direct_to_pfc_queue":    basetypes.BoolType{},
 		"drop_probability_level": basetypes.StringType{},
 		"forwarding_class":       basetypes.StringType{},
 		"pcp_values": basetypes.ListType{
@@ -3676,7 +3676,7 @@ func (v Dot1pPolicyEntryValue) ToObjectValue(ctx context.Context) (basetypes.Obj
 	objVal, diags := types.ObjectValue(
 		attributeTypes,
 		map[string]attr.Value{
-			"direct_to_pfcqueue":     v.DirectToPfcqueue,
+			"direct_to_pfc_queue":    v.DirectToPfcQueue,
 			"drop_probability_level": v.DropProbabilityLevel,
 			"forwarding_class":       v.ForwardingClass,
 			"pcp_values":             pcpValues,
@@ -3700,7 +3700,7 @@ func (v Dot1pPolicyEntryValue) Equal(o attr.Value) bool {
 		return true
 	}
 
-	if !v.DirectToPfcqueue.Equal(other.DirectToPfcqueue) {
+	if !v.DirectToPfcQueue.Equal(other.DirectToPfcQueue) {
 		return false
 	}
 
@@ -3729,7 +3729,7 @@ func (v Dot1pPolicyEntryValue) Type(ctx context.Context) attr.Type {
 
 func (v Dot1pPolicyEntryValue) AttributeTypes(ctx context.Context) map[string]attr.Type {
 	return map[string]attr.Type{
-		"direct_to_pfcqueue":     basetypes.BoolType{},
+		"direct_to_pfc_queue":    basetypes.BoolType{},
 		"drop_probability_level": basetypes.StringType{},
 		"forwarding_class":       basetypes.StringType{},
 		"pcp_values": basetypes.ListType{

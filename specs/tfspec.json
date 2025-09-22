@@ -520,7 +520,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -1075,7 +1075,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -1274,7 +1274,7 @@
                                                                     "computed_optional_required": "optional",
                                                                     "attributes": [
                                                                         {
-                                                                            "name": "direct_to_pfcqueue",
+                                                                            "name": "direct_to_pfc_queue",
                                                                             "bool": {
                                                                                 "computed_optional_required": "optional",
                                                                                 "description": "In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping."
@@ -1814,7 +1814,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -1911,7 +1911,7 @@
                                                                                     "computed_optional_required": "optional",
                                                                                     "attributes": [
                                                                                         {
-                                                                                            "name": "direct_to_pfcqueue",
+                                                                                            "name": "direct_to_pfc_queue",
                                                                                             "bool": {
                                                                                                 "computed_optional_required": "optional",
                                                                                                 "description": "In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping."
@@ -2601,7 +2601,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -2922,7 +2922,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -3218,7 +3218,7 @@
                         }
                     },
                     {
-                        "name": "labelselector",
+                        "name": "label_selector",
                         "string": {
                             "computed_optional_required": "computed_optional",
                             "description": "a label selector string to filter the results based on CR labels"
@@ -4373,7 +4373,7 @@
                                                                     "computed_optional_required": "optional",
                                                                     "attributes": [
                                                                         {
-                                                                            "name": "direct_to_pfcqueue",
+                                                                            "name": "direct_to_pfc_queue",
                                                                             "bool": {
                                                                                 "computed_optional_required": "optional",
                                                                                 "description": "In addition to creating a Dot1p PCP value to Forwarding Class mapping, this will map the PCP values directly to the PFC queue specified in the Forwarding Class to Queue mapping."
