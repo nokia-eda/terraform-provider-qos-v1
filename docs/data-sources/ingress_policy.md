@@ -27,7 +27,9 @@ description: |-
 
 ### Read-Only
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `metadata` (Attributes) (see [below for nested schema](#nestedatt--metadata))
 - `status` (Attributes) IngressPolicyStatus defines the observed state of IngressPolicy (see [below for nested schema](#nestedatt--status))
@@ -111,6 +113,7 @@ Optional:
 - `destination_port_operator` (String) Operator to use when matching destinationPort, either Equals, GreaterOrEquals, or LessOrEquals.
 - `destination_port_range` (String) Range of destination ports to match, in the format n-m, e.g. 100-200,  The start and end of the range must be port numbers.
 - `destination_prefix` (String) Destination prefix to match.
+- `dscp` (List of Number) Match DSCP values.
 - `first_fragment` (Boolean) Match the first fragment only.
 - `fragment` (Boolean) Match any fragment.
 - `icmp_code` (List of Number) Match a specific ICMP code, as a number between 0-255, e.g. 0.
@@ -211,6 +214,25 @@ Optional:
 - `queue` (String) Reference to a Queue resource.
 
 
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Read-Only:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Read-Only:
+
+- `count` (Number)
 
 
 <a id="nestedatt--metadata"></a>

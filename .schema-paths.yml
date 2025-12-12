@@ -3,6 +3,46 @@ app_group:
       path: /apps/qos.eda.nokia.com
       method: GET
 
+intent_targets:
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_targets
+      method: GET
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_targets
+      method: GET
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_targets
+      method: GET
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_targets
+      method: GET
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_targets
+      method: GET
+  - read:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_targets
+      method: GET
+
+k8_s_topology_request:
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_topology
+      method: POST
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_topology
+      method: POST
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_topology
+      method: POST
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_topology
+      method: POST
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_topology
+      method: POST
+  - create:
+      path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_topology
+      method: POST
+
 patch:
   - update:
       path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}
@@ -255,41 +295,70 @@ com.nokia.eda.qos.v1.queue_deleted_resources:
       path: /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/_deleted
       method: GET
 
-totalPaths: 39
-totalSchemas: 58
-usedSchemas: 25
-unusedSchemas: 33
+totalPaths: 45
+totalSchemas: 89
+usedSchemas: 27
+unusedSchemas: 62
 unusedSchemaList:
   - AppGroupVersion
   - ErrorIndex
   - ErrorItem
   - ErrorResponse
+  - IntentTarget
   - K8SPatchOp
   - OverlayState
   - Resource
   - ResourceHistoryEntry
   - StatusDetails
   - TopoAttrMetadata
+  - TopoAttribute
+  - TopoBoolExpression
+  - TopoBoolLiteral
   - TopoElemMetadata
-  - TopoLinkEndpoint
+  - TopoEndpointBoolExpression
+  - TopoField
+  - TopoFixedBoolExpression
+  - TopoLabelSelector
+  - TopoLiteralStatusOrBadge
+  - TopoLiteralValue
+  - TopoLogicalExpression
   - TopoNodeGrouping
   - TopoOverlayEndpoint
   - TopoOverlayEndpointState
   - TopoOverlayLink
+  - TopoOverlayLinkGroup
+  - TopoOverlayLinkGroupEndpoint
   - TopoOverlayLinkState
   - TopoOverlayNode
+  - TopoOverlayNodeOrGroup
   - TopoOverlayNodeState
+  - TopoOverlayValue
   - TopoSchema
+  - TopoStateFilter
+  - TopoValue
+  - TopoValueExpression
   - Topology
   - com.nokia.eda.qos.v1.EgressPolicy_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.EgressPolicy_alarms
+  - com.nokia.eda.qos.v1.EgressPolicy_deviations
   - com.nokia.eda.qos.v1.EgressPolicy_metadata
   - com.nokia.eda.qos.v1.ForwardingClass_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.ForwardingClass_alarms
+  - com.nokia.eda.qos.v1.ForwardingClass_deviations
   - com.nokia.eda.qos.v1.ForwardingClass_metadata
   - com.nokia.eda.qos.v1.IngressPolicy_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.IngressPolicy_alarms
+  - com.nokia.eda.qos.v1.IngressPolicy_deviations
   - com.nokia.eda.qos.v1.IngressPolicy_metadata
   - com.nokia.eda.qos.v1.PolicyAttachment_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.PolicyAttachment_alarms
+  - com.nokia.eda.qos.v1.PolicyAttachment_deviations
   - com.nokia.eda.qos.v1.PolicyAttachment_metadata
   - com.nokia.eda.qos.v1.PolicyDeployment_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.PolicyDeployment_alarms
+  - com.nokia.eda.qos.v1.PolicyDeployment_deviations
   - com.nokia.eda.qos.v1.PolicyDeployment_metadata
   - com.nokia.eda.qos.v1.Queue_DeletedResourceEntry
+  - com.nokia.eda.qos.v1.Queue_alarms
+  - com.nokia.eda.qos.v1.Queue_deviations
   - com.nokia.eda.qos.v1.Queue_metadata

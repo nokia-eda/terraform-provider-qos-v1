@@ -27,7 +27,9 @@ description: |-
 
 ### Read-Only
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `metadata` (Attributes) (see [below for nested schema](#nestedatt--metadata))
 - `status` (Attributes) EgressPolicyStatus defines the observed state of EgressPolicy (see [below for nested schema](#nestedatt--status))
@@ -151,11 +153,30 @@ Optional:
 - `max_drop_probability_percent` (Number) If the queue depth is between min and max threshold then this the probability with which packets are dropped or marked.
 - `max_threshold` (Number) The maximum threshold parameter for a RED-managed queue in bytes. When the average queue length exceeds the max value, all packets are dropped (or marked if ECN is enabled). Mutually exclusive with min-threshold-percent and max-threshold-percent.
 - `max_threshold_percent` (Number) The maximum threshold parameter for a RED-managed queue in percent. When the average queue length exceeds the max value, all packets are dropped (or marked if ECN is enabled). Mutually exclusive with min-threshold and max-threshold.
-- `min_threshold` (Number) The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.
-- `min_threshold_percent` (Number) The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.
+- `min_threshold` (Number) The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.
+- `min_threshold_percent` (Number) The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.
 - `traffic_type` (String) The traffic type to which the WRED slope applies.
 
 
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Read-Only:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Read-Only:
+
+- `count` (Number)
 
 
 <a id="nestedatt--metadata"></a>

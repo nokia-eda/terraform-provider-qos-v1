@@ -22,7 +22,9 @@ description: |-
 
 ### Optional
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `name` (String) name of the IngressPolicy
 - `namespace` (String) the namespace scope in which to operate
@@ -136,6 +138,7 @@ Optional:
 - `destination_port_operator` (String) Operator to use when matching destinationPort, either Equals, GreaterOrEquals, or LessOrEquals.
 - `destination_port_range` (String) Range of destination ports to match, in the format n-m, e.g. 100-200,  The start and end of the range must be port numbers.
 - `destination_prefix` (String) Destination prefix to match.
+- `dscp` (List of Number) Match DSCP values.
 - `first_fragment` (Boolean) Match the first fragment only.
 - `fragment` (Boolean) Match any fragment.
 - `icmp_code` (List of Number) Match a specific ICMP code, as a number between 0-255, e.g. 0.
@@ -245,6 +248,25 @@ Optional:
 - `pfc_reserved_share_buffer_percent` (Number) Maximum level the pfc-queue can take from pfc-reserved buffer configured per given forwarding-complex.
 
 
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Optional:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Optional:
+
+- `count` (Number)
 
 
 <a id="nestedatt--status"></a>

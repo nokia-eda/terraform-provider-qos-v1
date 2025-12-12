@@ -22,7 +22,9 @@ description: |-
 
 ### Optional
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `name` (String) name of the PolicyDeployment
 - `namespace` (String) the namespace scope in which to operate
@@ -54,6 +56,25 @@ Optional:
 - `interfaces` (List of String) Specifies a list of Interfaces on which to deploy the policies.
 - `node` (String) Specifies a Node to deploy the policies on.
 - `node_selector` (List of String) Specifies a label selector to filter the nodes on which to deploy the policies.
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Optional:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Optional:
+
+- `count` (Number)
 
 
 <a id="nestedatt--status"></a>

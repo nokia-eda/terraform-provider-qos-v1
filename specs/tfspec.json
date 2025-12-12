@@ -93,9 +93,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -460,14 +506,14 @@
                                                                     "name": "min_threshold",
                                                                     "int64": {
                                                                         "computed_optional_required": "optional",
-                                                                        "description": "The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
+                                                                        "description": "The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
                                                                     }
                                                                 },
                                                                 {
                                                                     "name": "min_threshold_percent",
                                                                     "int64": {
                                                                         "computed_optional_required": "optional",
-                                                                        "description": "The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
+                                                                        "description": "The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
                                                                     }
                                                                 },
                                                                 {
@@ -527,6 +573,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -546,9 +599,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -913,14 +1012,14 @@
                                                                                     "name": "min_threshold",
                                                                                     "int64": {
                                                                                         "computed_optional_required": "optional",
-                                                                                        "description": "The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
+                                                                                        "description": "The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
                                                                                     }
                                                                                 },
                                                                                 {
                                                                                     "name": "min_threshold_percent",
                                                                                     "int64": {
                                                                                         "computed_optional_required": "optional",
-                                                                                        "description": "The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
+                                                                                        "description": "The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
                                                                                     }
                                                                                 },
                                                                                 {
@@ -990,9 +1089,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -1082,6 +1227,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -1101,9 +1253,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -1203,9 +1401,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -1439,6 +1683,16 @@
                                                                             "string": {
                                                                                 "computed_optional_required": "optional",
                                                                                 "description": "Destination prefix to match."
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "dscp",
+                                                                            "list": {
+                                                                                "computed_optional_required": "optional",
+                                                                                "element_type": {
+                                                                                    "int64": {}
+                                                                                },
+                                                                                "description": "Match DSCP values."
                                                                             }
                                                                         },
                                                                         {
@@ -1821,6 +2075,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -1840,9 +2101,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -2076,6 +2383,16 @@
                                                                                             "string": {
                                                                                                 "computed_optional_required": "optional",
                                                                                                 "description": "Destination prefix to match."
+                                                                                            }
+                                                                                        },
+                                                                                        {
+                                                                                            "name": "dscp",
+                                                                                            "list": {
+                                                                                                "computed_optional_required": "optional",
+                                                                                                "element_type": {
+                                                                                                    "int64": {}
+                                                                                                },
+                                                                                                "description": "Match DSCP values."
                                                                                             }
                                                                                         },
                                                                                         {
@@ -2468,9 +2785,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -2608,6 +2971,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -2627,9 +2997,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -2777,9 +3193,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -2929,6 +3391,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -2948,9 +3417,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -3110,9 +3625,55 @@
                         }
                     },
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed"
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed"
+                                    }
+                                }
+                            ]
                         }
                     },
                     {
@@ -3225,6 +3786,13 @@
                         }
                     },
                     {
+                        "name": "labelselector",
+                        "string": {
+                            "computed_optional_required": "computed_optional",
+                            "description": "Deprecated: a label selector string to filter the results based on CR labels"
+                        }
+                    },
+                    {
                         "name": "namespace",
                         "string": {
                             "computed_optional_required": "required",
@@ -3244,9 +3812,55 @@
                             "nested_object": {
                                 "attributes": [
                                     {
+                                        "name": "alarms",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "critical",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "major",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "minor",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                },
+                                                {
+                                                    "name": "warning",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    {
                                         "name": "api_version",
                                         "string": {
                                             "computed_optional_required": "computed"
+                                        }
+                                    },
+                                    {
+                                        "name": "deviations",
+                                        "single_nested": {
+                                            "computed_optional_required": "computed",
+                                            "attributes": [
+                                                {
+                                                    "name": "count",
+                                                    "int64": {
+                                                        "computed_optional_required": "computed"
+                                                    }
+                                                }
+                                            ]
                                         }
                                     },
                                     {
@@ -3424,6 +4038,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -3442,6 +4088,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]
@@ -4020,14 +4680,14 @@
                                                                     "name": "min_threshold",
                                                                     "int64": {
                                                                         "computed_optional_required": "optional",
-                                                                        "description": "The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
+                                                                        "description": "The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent."
                                                                     }
                                                                 },
                                                                 {
                                                                     "name": "min_threshold_percent",
                                                                     "int64": {
                                                                         "computed_optional_required": "optional",
-                                                                        "description": "The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
+                                                                        "description": "The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold."
                                                                     }
                                                                 },
                                                                 {
@@ -4095,6 +4755,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -4113,6 +4805,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]
@@ -4241,6 +4947,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -4259,6 +4997,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]
@@ -4703,6 +5455,28 @@
                                                                             "string": {
                                                                                 "computed_optional_required": "optional",
                                                                                 "description": "Destination prefix to match."
+                                                                            }
+                                                                        },
+                                                                        {
+                                                                            "name": "dscp",
+                                                                            "list": {
+                                                                                "computed_optional_required": "optional",
+                                                                                "element_type": {
+                                                                                    "int64": {}
+                                                                                },
+                                                                                "description": "Match DSCP values.",
+                                                                                "validators": [
+                                                                                    {
+                                                                                        "custom": {
+                                                                                            "imports": [
+                                                                                                {
+                                                                                                    "path": "github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+                                                                                                }
+                                                                                            ],
+                                                                                            "schema_definition": "listvalidator.SizeAtMost(64)"
+                                                                                        }
+                                                                                    }
+                                                                                ]
                                                                             }
                                                                         },
                                                                         {
@@ -5339,6 +6113,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -5357,6 +6163,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]
@@ -5545,6 +6365,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -5563,6 +6415,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]
@@ -5763,6 +6629,38 @@
             "schema": {
                 "attributes": [
                     {
+                        "name": "alarms",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "critical",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "major",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "minor",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                },
+                                {
+                                    "name": "warning",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
                         "name": "api_version",
                         "string": {
                             "computed_optional_required": "computed_optional",
@@ -5781,6 +6679,20 @@
                                             }
                                         ],
                                         "schema_definition": "stringvalidator.RegexMatches(regexp.MustCompile(\"^qos\\\\.eda\\\\.nokia\\\\.com/v1$\"), \"\")"
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "deviations",
+                        "single_nested": {
+                            "computed_optional_required": "computed_optional",
+                            "attributes": [
+                                {
+                                    "name": "count",
+                                    "int64": {
+                                        "computed_optional_required": "computed_optional"
                                     }
                                 }
                             ]

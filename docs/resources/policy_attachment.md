@@ -22,7 +22,9 @@ description: |-
 
 ### Optional
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `name` (String) name of the PolicyAttachment
 - `namespace` (String) the namespace scope in which to operate
@@ -63,6 +65,25 @@ Optional:
 - `interface_type` (String) Used for platforms that differentiate between access/service interfaces and network interface.  These platforms may require different classifiers depending on whether they are applied on access/service interfaces or network interfaces.  Specifies whether the classifier should be configured as a service Egress classifier or network Egress classifier
 - `sub_interface_index` (Number) Specifies the SubInterfaceIndex on which to deploy the policies.
 
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Optional:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Optional:
+
+- `count` (Number)
 
 
 <a id="nestedatt--status"></a>

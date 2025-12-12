@@ -24,6 +24,7 @@ description: |-
 - `fields` (String) a comma-separated list of resource fields to fetch/return.  If unspecified, all fields are fetched.  If empty, only key-fields are fetched.
 - `filter` (String) an EQL "where" expression that will be used to filter the set of resources returned.
 - `label_selector` (String) a label selector string to filter the results based on CR labels
+- `labelselector` (String) Deprecated: a label selector string to filter the results based on CR labels
 
 ### Read-Only
 
@@ -40,7 +41,9 @@ Optional:
 
 Read-Only:
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--items--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--items--deviations))
 - `kind` (String)
 - `metadata` (Attributes) (see [below for nested schema](#nestedatt--items--metadata))
 - `status` (Attributes) IngressPolicyStatus defines the observed state of IngressPolicy (see [below for nested schema](#nestedatt--items--status))
@@ -124,6 +127,7 @@ Optional:
 - `destination_port_operator` (String) Operator to use when matching destinationPort, either Equals, GreaterOrEquals, or LessOrEquals.
 - `destination_port_range` (String) Range of destination ports to match, in the format n-m, e.g. 100-200,  The start and end of the range must be port numbers.
 - `destination_prefix` (String) Destination prefix to match.
+- `dscp` (List of Number) Match DSCP values.
 - `first_fragment` (Boolean) Match the first fragment only.
 - `fragment` (Boolean) Match any fragment.
 - `icmp_code` (List of Number) Match a specific ICMP code, as a number between 0-255, e.g. 0.
@@ -224,6 +228,25 @@ Optional:
 - `queue` (String) Reference to a Queue resource.
 
 
+
+
+<a id="nestedatt--items--alarms"></a>
+### Nested Schema for `items.alarms`
+
+Read-Only:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--items--deviations"></a>
+### Nested Schema for `items.deviations`
+
+Read-Only:
+
+- `count` (Number)
 
 
 <a id="nestedatt--items--metadata"></a>

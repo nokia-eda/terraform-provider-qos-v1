@@ -27,7 +27,9 @@ description: |-
 
 ### Read-Only
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--deviations))
 - `kind` (String)
 - `metadata` (Attributes) (see [below for nested schema](#nestedatt--metadata))
 - `status` (Attributes) QueueStatus defines the observed state of Queue (see [below for nested schema](#nestedatt--status))
@@ -40,6 +42,25 @@ Optional:
 - `queue_id` (Number) The ID of the queue on which to apply the properties.  This is mandatory for usage of queus on SROS and is ignored on other operating systems.
 - `queue_type` (String) QueueType specifies whether this is a normal queue or a PFC queue
 - `traffic_type` (String) The traffic type of the queue, either unicast or multicast.
+
+
+<a id="nestedatt--alarms"></a>
+### Nested Schema for `alarms`
+
+Read-Only:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--deviations"></a>
+### Nested Schema for `deviations`
+
+Read-Only:
+
+- `count` (Number)
 
 
 <a id="nestedatt--metadata"></a>

@@ -14,7 +14,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name},PUT,com.nokia.eda.qos.v1.EgressPolicy,egress_policy,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss,DELETE,com.nokia.eda.qos.v1.ForwardingClassList,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss,GET,com.nokia.eda.qos.v1.ForwardingClassList,forwarding_class_list,true,true,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss,POST,com.nokia.eda.qos.v1.ForwardingClass,forwarding_class,true,false,true
@@ -24,7 +26,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name},PUT,com.nokia.eda.qos.v1.ForwardingClass,forwarding_class,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys,DELETE,com.nokia.eda.qos.v1.IngressPolicyList,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys,GET,com.nokia.eda.qos.v1.IngressPolicyList,ingress_policy_list,true,true,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys,POST,com.nokia.eda.qos.v1.IngressPolicy,ingress_policy,true,false,true
@@ -34,7 +38,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name},PUT,com.nokia.eda.qos.v1.IngressPolicy,ingress_policy,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments,DELETE,com.nokia.eda.qos.v1.PolicyAttachmentList,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments,GET,com.nokia.eda.qos.v1.PolicyAttachmentList,policy_attachment_list,true,true,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments,POST,com.nokia.eda.qos.v1.PolicyAttachment,policy_attachment,true,false,true
@@ -44,7 +50,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name},PUT,com.nokia.eda.qos.v1.PolicyAttachment,policy_attachment,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments,DELETE,com.nokia.eda.qos.v1.PolicyDeploymentList,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments,GET,com.nokia.eda.qos.v1.PolicyDeploymentList,policy_deployment_list,true,true,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments,POST,com.nokia.eda.qos.v1.PolicyDeployment,policy_deployment,true,false,true
@@ -54,7 +62,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name},PUT,com.nokia.eda.qos.v1.PolicyDeployment,policy_deployment,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues,DELETE,com.nokia.eda.qos.v1.QueueList,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues,GET,com.nokia.eda.qos.v1.QueueList,queue_list,true,true,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues,POST,com.nokia.eda.qos.v1.Queue,queue,true,false,true
@@ -64,7 +74,9 @@ Path,Method,Schema,Model Name,Supported,Datasource,Resource
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name},PATCH,Patch,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name},PUT,com.nokia.eda.qos.v1.Queue,queue,true,false,true
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_revs,GET,ResourceHistory,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_targets,GET,IntentTargets,,false,false,false
 /apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_topology,GET,ResourceTopology,,false,false,false
+/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_topology,POST,K8STopologyRequest,,false,false,false
 /apps/qos.eda.nokia.com/v1/policyattachments,GET,com.nokia.eda.qos.v1.PolicyAttachmentList,,false,false,false
 /apps/qos.eda.nokia.com/v1/policydeployments,GET,com.nokia.eda.qos.v1.PolicyDeploymentList,,false,false,false
 /apps/qos.eda.nokia.com/v1/queues,GET,com.nokia.eda.qos.v1.QueueList,,false,false,false

@@ -24,6 +24,7 @@ description: |-
 - `fields` (String) a comma-separated list of resource fields to fetch/return.  If unspecified, all fields are fetched.  If empty, only key-fields are fetched.
 - `filter` (String) an EQL "where" expression that will be used to filter the set of resources returned.
 - `label_selector` (String) a label selector string to filter the results based on CR labels
+- `labelselector` (String) Deprecated: a label selector string to filter the results based on CR labels
 
 ### Read-Only
 
@@ -40,7 +41,9 @@ Optional:
 
 Read-Only:
 
+- `alarms` (Attributes) (see [below for nested schema](#nestedatt--items--alarms))
 - `api_version` (String)
+- `deviations` (Attributes) (see [below for nested schema](#nestedatt--items--deviations))
 - `kind` (String)
 - `metadata` (Attributes) (see [below for nested schema](#nestedatt--items--metadata))
 - `status` (Attributes) EgressPolicyStatus defines the observed state of EgressPolicy (see [below for nested schema](#nestedatt--items--status))
@@ -164,11 +167,30 @@ Optional:
 - `max_drop_probability_percent` (Number) If the queue depth is between min and max threshold then this the probability with which packets are dropped or marked.
 - `max_threshold` (Number) The maximum threshold parameter for a RED-managed queue in bytes. When the average queue length exceeds the max value, all packets are dropped (or marked if ECN is enabled). Mutually exclusive with min-threshold-percent and max-threshold-percent.
 - `max_threshold_percent` (Number) The maximum threshold parameter for a RED-managed queue in percent. When the average queue length exceeds the max value, all packets are dropped (or marked if ECN is enabled). Mutually exclusive with min-threshold and max-threshold.
-- `min_threshold` (Number) The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.
-- `min_threshold_percent` (Number) The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.
+- `min_threshold` (Number) The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.
+- `min_threshold_percent` (Number) The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.
 - `traffic_type` (String) The traffic type to which the WRED slope applies.
 
 
+
+
+<a id="nestedatt--items--alarms"></a>
+### Nested Schema for `items.alarms`
+
+Read-Only:
+
+- `critical` (Number)
+- `major` (Number)
+- `minor` (Number)
+- `warning` (Number)
+
+
+<a id="nestedatt--items--deviations"></a>
+### Nested Schema for `items.deviations`
+
+Read-Only:
+
+- `count` (Number)
 
 
 <a id="nestedatt--items--metadata"></a>

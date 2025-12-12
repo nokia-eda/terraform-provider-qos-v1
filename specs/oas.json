@@ -57,28 +57,56 @@
         "type": "object"
       },
       "ErrorResponse": {
-        "description": "Generic error response for REST APIs",
         "properties": {
+          "causeCollection": {
+            "description": "A lower-level set of structured errors.\n\nOnly oneOf `causeWrapped`, `causeSimple`, `causeCollection`, or `causeIndexedCollection` will ever be set.",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "type": "array"
+          },
+          "causeIndexedCollection": {
+            "description": "A lower-level set of structured errors.\nEach of these errors MUST have index set.\n\nOnly oneOf `causeWrapped`, `causeSimple`, `causeCollection`, or `causeIndexedCollection` will ever be set.",
+            "items": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "type": "array"
+          },
+          "causeIsInternal": {
+            "description": "If true, then the cause (`causeWrapped`, `causeSimple`, `causeCollection`, or `causeIndexedCollection`) should be hidden from the user.",
+            "type": "boolean"
+          },
+          "causeSimple": {
+            "description": "Simple string error type.\n\nOnly oneOf `causeWrapped`, `causeSimple`, `causeCollection`, or `causeIndexedCollection` will ever be set.",
+            "type": "string"
+          },
+          "causeWrapped": {
+            "$ref": "#/components/schemas/ErrorResponse"
+          },
           "code": {
-            "description": "the numeric HTTP error code for the response.",
+            "deprecated": true,
+            "description": "the numeric HTTP error code for the response.\n\nDeprecated: Prefer to check the request's HTTP response code directly.",
             "format": "int64",
             "type": "integer"
           },
           "details": {
-            "description": "The optional details of the error response.",
+            "deprecated": true,
+            "description": "The optional details of the error response.\nDeprecated: Replaced by `causeSimple`.",
             "type": "string"
           },
           "dictionary": {
             "additionalProperties": true,
-            "description": "Dictionary/map of associated data/information relevant to the error.\nThe error \"message\" may contain {{name}} escapes that should be substituted\nwith information from this dictionary.",
+            "deprecated": true,
+            "description": "Dictionary/map of associated data/information relevant to the error.\nThe error \"message\" may contain {{name}} escapes that should be substituted\nwith information from this dictionary.\n\nDeprecated: Use \"values\" instead.",
             "type": "object"
           },
           "domain": {
-            "description": "The \"domain\" for the error.  If empty, it is an EDA\ncore error.  Alternatively it can be an EDA application\n\"apiVersion\" value (e.g. interfaces.eda.nokia.com/v1alpha1)\nindicating that the error is specific to that application.\nThe domain gives the receiver information that they can use\nto help them interpret the \"internal\" error code value, or\nto find an internationalization translation for the message.",
+            "description": "The \"domain\" for the error.  If empty, it is an EDA\ncore error.  Alternatively it can be an EDA application\n\"apiVersion\" value (e.g. interfaces.eda.nokia.com/v1alpha1)\nindicating that the error is specific to that application.\nThe domain gives the receiver information that they can use\nto help them interpret the \"type\" field.",
             "type": "string"
           },
           "errors": {
-            "description": "Collection of errors in cases where more than one exists. This needs to be\nflexible so we can support multiple formats",
+            "deprecated": true,
+            "description": "Collection of errors in cases where more than one exists.\nThis needs to be flexible so we can support multiple formats.\nDeprecated: Replaced by `causeCollection` or `causeIndexedCollection` instead.",
             "items": {
               "$ref": "#/components/schemas/ErrorItem"
             },
@@ -88,7 +116,8 @@
             "$ref": "#/components/schemas/ErrorIndex"
           },
           "internal": {
-            "description": "Internal error code in cases where we don't have an array of errors",
+            "deprecated": true,
+            "description": "Internal error code number.\n\nDeprecated: \"type\" \u0026 \"domain\" should be used instead to uniquely identify this error.",
             "format": "int64",
             "type": "integer"
           },
@@ -97,19 +126,45 @@
             "type": "string"
           },
           "ref": {
-            "description": "Reference to the error source. Should typically be the URI of the request",
+            "description": "Reference to the error source. Should typically be the URI of the request.",
             "type": "string"
           },
           "type": {
-            "description": "URI pointing at a document that describes the error and mitigation steps\nIf there is no document, point to the RFC for the HTTP error code",
+            "description": "Type defines a unique identifier for the error, within the domain.\nThis may be used (along with the domain) to find an internationalization translation for the message.\n\nSHOULD be a valid golang identifier, and SHOULD be in UpperCamelCase.",
             "type": "string"
+          },
+          "values": {
+            "additionalProperties": {
+              "type": "object"
+            },
+            "description": "Associated data/information.\nThe error \"message\" may contain {{name}} escapes that should be substituted with information from this dictionary.\n\nNote that this map MUST NOT contain JSON objects (`{...}`) or arrays (`[...]`), only simple JSON types are permitted.",
+            "type": "object"
           }
         },
         "required": [
-          "code",
-          "message"
+          "internal",
+          "message",
+          "type"
         ],
+        "title": "Generic error response for REST APIs.",
         "type": "object"
+      },
+      "IntentTarget": {
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "IntentTargets": {
+        "items": {
+          "$ref": "#/components/schemas/IntentTarget"
+        },
+        "type": "array"
       },
       "K8SPatchOp": {
         "properties": {
@@ -135,8 +190,28 @@
         ],
         "type": "object"
       },
+      "K8STopologyRequest": {
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/TopoStateFilter"
+          },
+          "recurse": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "OverlayState": {
         "properties": {
+          "link_groups": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TopoOverlayLinkGroup"
+            },
+            "type": "object"
+          },
           "links": {
             "additionalProperties": {
               "$ref": "#/components/schemas/TopoOverlayLink"
@@ -146,6 +221,12 @@
           "nodes": {
             "additionalProperties": {
               "$ref": "#/components/schemas/TopoOverlayNode"
+            },
+            "type": "object"
+          },
+          "nodes_and_groups": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TopoOverlayNodeOrGroup"
             },
             "type": "object"
           }
@@ -295,6 +376,51 @@
         },
         "type": "object"
       },
+      "TopoAttribute": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoBoolExpression": {
+        "properties": {
+          "endpoint_expression": {
+            "$ref": "#/components/schemas/TopoEndpointBoolExpression"
+          },
+          "fixed_expression": {
+            "$ref": "#/components/schemas/TopoFixedBoolExpression"
+          },
+          "has_badge": {
+            "$ref": "#/components/schemas/TopoLiteralStatusOrBadge"
+          },
+          "label": {
+            "$ref": "#/components/schemas/TopoLabelSelector"
+          },
+          "literal": {
+            "$ref": "#/components/schemas/TopoBoolLiteral"
+          },
+          "logical": {
+            "$ref": "#/components/schemas/TopoLogicalExpression"
+          },
+          "not": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
+          },
+          "value_expression": {
+            "$ref": "#/components/schemas/TopoValueExpression"
+          }
+        },
+        "type": "object"
+      },
+      "TopoBoolLiteral": {
+        "properties": {
+          "value": {
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
       "TopoElemMetadata": {
         "properties": {
           "attributes": {
@@ -315,16 +441,87 @@
         },
         "type": "object"
       },
-      "TopoLinkEndpoint": {
+      "TopoEndpointBoolExpression": {
         "properties": {
           "endpoint": {
             "type": "string"
           },
-          "node": {
+          "expression": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
+          }
+        },
+        "type": "object"
+      },
+      "TopoField": {
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoFixedBoolExpression": {
+        "properties": {
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoLabelSelector": {
+        "properties": {
+          "selector": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "TopoLiteralStatusOrBadge": {
+        "properties": {
+          "overlay": {
             "type": "string"
           },
-          "node_key": {
+          "value": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "TopoLiteralValue": {
+        "properties": {
+          "badge": {
+            "$ref": "#/components/schemas/TopoLiteralStatusOrBadge"
+          },
+          "bool": {
+            "type": "boolean"
+          },
+          "number": {
+            "format": "double",
+            "type": "number"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TopoLiteralStatusOrBadge"
+          },
+          "string": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoLogicalExpression": {
+        "properties": {
+          "left": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "right": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
           }
         },
         "type": "object"
@@ -332,6 +529,9 @@
       "TopoNodeGrouping": {
         "properties": {
           "group": {
+            "type": "string"
+          },
+          "group_key": {
             "type": "string"
           },
           "tier": {
@@ -364,6 +564,12 @@
           "namespace": {
             "type": "string"
           },
+          "node": {
+            "type": "string"
+          },
+          "node_key": {
+            "type": "string"
+          },
           "overlays": {
             "additionalProperties": {
               "$ref": "#/components/schemas/TopoOverlayEndpointState"
@@ -372,10 +578,6 @@
           },
           "schema": {
             "$ref": "#/components/schemas/TopoSchema"
-          },
-          "state": {
-            "format": "int64",
-            "type": "integer"
           },
           "ui_name": {
             "type": "string"
@@ -404,16 +606,19 @@
             "type": "string"
           },
           "endpoint_a": {
-            "$ref": "#/components/schemas/TopoLinkEndpoint"
-          },
-          "endpoint_a_details": {
             "$ref": "#/components/schemas/TopoOverlayEndpoint"
+          },
+          "endpoint_a_name": {
+            "type": "string"
           },
           "endpoint_b": {
-            "$ref": "#/components/schemas/TopoLinkEndpoint"
-          },
-          "endpoint_b_details": {
             "$ref": "#/components/schemas/TopoOverlayEndpoint"
+          },
+          "endpoint_b_name": {
+            "type": "string"
+          },
+          "group_key": {
+            "type": "string"
           },
           "key": {
             "type": "string"
@@ -439,11 +644,38 @@
           "schema": {
             "$ref": "#/components/schemas/TopoSchema"
           },
-          "state": {
-            "format": "int64",
-            "type": "integer"
-          },
           "ui_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoOverlayLinkGroup": {
+        "properties": {
+          "endpoint_a": {
+            "$ref": "#/components/schemas/TopoOverlayLinkGroupEndpoint"
+          },
+          "endpoint_b": {
+            "$ref": "#/components/schemas/TopoOverlayLinkGroupEndpoint"
+          },
+          "key": {
+            "type": "string"
+          },
+          "overlays": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TopoOverlayLinkState"
+            },
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "TopoOverlayLinkGroupEndpoint": {
+        "properties": {
+          "group_key": {
+            "type": "string"
+          },
+          "node_key": {
             "type": "string"
           }
         },
@@ -465,13 +697,6 @@
               "type": "object"
             },
             "type": "object"
-          },
-          "badges": {
-            "items": {
-              "format": "int64",
-              "type": "integer"
-            },
-            "type": "array"
           },
           "cr_name": {
             "type": "string"
@@ -503,9 +728,56 @@
           "schema": {
             "$ref": "#/components/schemas/TopoSchema"
           },
-          "state": {
+          "ui_name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoOverlayNodeOrGroup": {
+        "properties": {
+          "attributes": {
+            "additionalProperties": {
+              "type": "object"
+            },
+            "type": "object"
+          },
+          "cr_name": {
+            "type": "string"
+          },
+          "grouping": {
+            "$ref": "#/components/schemas/TopoNodeGrouping"
+          },
+          "key": {
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "namespace": {
+            "type": "string"
+          },
+          "num_nodes": {
             "format": "int64",
             "type": "integer"
+          },
+          "overlays": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/TopoOverlayNodeState"
+            },
+            "type": "object"
+          },
+          "schema": {
+            "$ref": "#/components/schemas/TopoSchema"
+          },
+          "type": {
+            "type": "string"
           },
           "ui_name": {
             "type": "string"
@@ -529,6 +801,14 @@
         },
         "type": "object"
       },
+      "TopoOverlayValue": {
+        "properties": {
+          "overlay": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
       "TopoSchema": {
         "properties": {
           "group": {
@@ -539,6 +819,69 @@
           },
           "version": {
             "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TopoStateFilter": {
+        "properties": {
+          "expand_all_link_groups": {
+            "type": "boolean"
+          },
+          "expand_all_node_groups": {
+            "type": "boolean"
+          },
+          "expanded_link_groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "expanded_node_groups": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "link_filter": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
+          },
+          "node_filter": {
+            "$ref": "#/components/schemas/TopoBoolExpression"
+          }
+        },
+        "type": "object"
+      },
+      "TopoValue": {
+        "properties": {
+          "attribute": {
+            "$ref": "#/components/schemas/TopoAttribute"
+          },
+          "badge": {
+            "$ref": "#/components/schemas/TopoOverlayValue"
+          },
+          "field": {
+            "$ref": "#/components/schemas/TopoField"
+          },
+          "literal": {
+            "$ref": "#/components/schemas/TopoLiteralValue"
+          },
+          "status": {
+            "$ref": "#/components/schemas/TopoOverlayValue"
+          }
+        },
+        "type": "object"
+      },
+      "TopoValueExpression": {
+        "properties": {
+          "left": {
+            "$ref": "#/components/schemas/TopoValue"
+          },
+          "operation": {
+            "type": "string"
+          },
+          "right": {
+            "$ref": "#/components/schemas/TopoValue"
           }
         },
         "type": "object"
@@ -587,6 +930,9 @@
       "com.nokia.eda.qos.v1.EgressPolicy": {
         "description": "EgressPolicy is the Schema for the egresspolicys API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -595,6 +941,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy_deviations"
           },
           "kind": {
             "default": "EgressPolicy",
@@ -1053,7 +1402,7 @@
                             }
                           },
                           "minThreshold": {
-                            "description": "The mininum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.",
+                            "description": "The minimum threshold parameter for a RED-managed queue in bytes. When the average queue length is less than min, all packets are admitted to the queue. Mututally exclusive with min-threshold-percent and max-threshold-percent.",
                             "format": "int64",
                             "title": "Min Threshold",
                             "type": "integer",
@@ -1062,7 +1411,7 @@
                             }
                           },
                           "minThresholdPercent": {
-                            "description": "The mininum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.",
+                            "description": "The minimum threshold parameter for a RED-managed queue in percent. When the average queue length is less than min, all packets are admitted to the queue. Mutually exclusive with min-threshold and max-threshold.",
                             "title": "Min Threshold Percent",
                             "type": "integer",
                             "x-eda-nokia-com": {
@@ -1207,6 +1556,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.EgressPolicy_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.EgressPolicy_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.EgressPolicy_metadata": {
         "properties": {
           "annotations": {
@@ -1276,6 +1692,9 @@
       "com.nokia.eda.qos.v1.ForwardingClass": {
         "description": "ForwardingClass is the Schema for the forwardingclasss API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -1284,6 +1703,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass_deviations"
           },
           "kind": {
             "default": "ForwardingClass",
@@ -1397,6 +1819,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.ForwardingClass_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.ForwardingClass_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.ForwardingClass_metadata": {
         "properties": {
           "annotations": {
@@ -1466,6 +1955,9 @@
       "com.nokia.eda.qos.v1.IngressPolicy": {
         "description": "IngressPolicy is the Schema for the ingresspolicys API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -1474,6 +1966,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy_deviations"
           },
           "kind": {
             "default": "IngressPolicy",
@@ -1940,6 +2435,21 @@
                                 "ui-column-span": 2,
                                 "ui-order-priority": 150,
                                 "ui-single-line-group": "DestinationSourcePrefix"
+                              }
+                            },
+                            "dscp": {
+                              "description": "Match DSCP values.",
+                              "items": {
+                                "maximum": 63,
+                                "minimum": 0,
+                                "type": "integer"
+                              },
+                              "maxItems": 64,
+                              "title": "DSCP",
+                              "type": "array",
+                              "x-eda-nokia-com": {
+                                "ui-column-span": 2,
+                                "ui-order-priority": 1500
                               }
                             },
                             "firstFragment": {
@@ -2866,6 +3376,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.IngressPolicy_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.IngressPolicy_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.IngressPolicy_metadata": {
         "properties": {
           "annotations": {
@@ -2935,6 +3512,9 @@
       "com.nokia.eda.qos.v1.PolicyAttachment": {
         "description": "PolicyAttachment is the Schema for the policyattachments API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -2943,6 +3523,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment_deviations"
           },
           "kind": {
             "default": "PolicyAttachment",
@@ -3165,6 +3748,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.PolicyAttachment_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.PolicyAttachment_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.PolicyAttachment_metadata": {
         "properties": {
           "annotations": {
@@ -3234,6 +3884,9 @@
       "com.nokia.eda.qos.v1.PolicyDeployment": {
         "description": "PolicyDeployment is the Schema for the policydeployments API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -3242,6 +3895,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment_deviations"
           },
           "kind": {
             "default": "PolicyDeployment",
@@ -3305,6 +3961,14 @@
                 "title": "Interface Selector",
                 "type": "array",
                 "x-eda-nokia-com": {
+                  "ui-auto-completes": [
+                    {
+                      "condition": "true",
+                      "group": "interfaces.eda.nokia.com",
+                      "kind": "Interface",
+                      "type": "labelselector"
+                    }
+                  ],
                   "ui-column-span": 2,
                   "ui-order-priority": 200,
                   "ui-single-line-group": "Interfaces"
@@ -3373,6 +4037,14 @@
                 "title": "Node Selector",
                 "type": "array",
                 "x-eda-nokia-com": {
+                  "ui-auto-completes": [
+                    {
+                      "condition": "true",
+                      "group": "core.eda.nokia.com",
+                      "kind": "TopoNode",
+                      "type": "labelselector"
+                    }
+                  ],
                   "ui-column-span": 2,
                   "ui-order-priority": 100,
                   "ui-single-line-group": "Nodes"
@@ -3478,6 +4150,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.PolicyDeployment_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.PolicyDeployment_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.PolicyDeployment_metadata": {
         "properties": {
           "annotations": {
@@ -3547,6 +4286,9 @@
       "com.nokia.eda.qos.v1.Queue": {
         "description": "Queue is the Schema for the queues API",
         "properties": {
+          "alarms": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue_alarms"
+          },
           "apiVersion": {
             "default": "qos.eda.nokia.com/v1",
             "pattern": "^qos\\.eda\\.nokia\\.com/v1$",
@@ -3555,6 +4297,9 @@
               "ui-pattern-error": "The apiVersion must be set to qos.eda.nokia.com/v1",
               "ui-visible-if": "false"
             }
+          },
+          "deviations": {
+            "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue_deviations"
           },
           "kind": {
             "default": "Queue",
@@ -3710,6 +4455,73 @@
         },
         "type": "array"
       },
+      "com.nokia.eda.qos.v1.Queue_alarms": {
+        "properties": {
+          "critical": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Critical",
+              "ui-title-key": "alarm_severities.critical"
+            }
+          },
+          "major": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Major",
+              "ui-title-key": "alarm_severities.major"
+            }
+          },
+          "minor": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "minor",
+              "ui-title-key": "alarm_severities.minor"
+            }
+          },
+          "warning": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Warning",
+              "ui-title-key": "alarm_severities.warning"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 40,
+          "ui-title": "Alarms",
+          "ui-title-key": "alarms"
+        }
+      },
+      "com.nokia.eda.qos.v1.Queue_deviations": {
+        "properties": {
+          "count": {
+            "format": "int64",
+            "readOnly": true,
+            "type": "integer",
+            "x-eda-nokia-com": {
+              "ui-title": "Count",
+              "ui-title-key": "count_column"
+            }
+          }
+        },
+        "readOnly": true,
+        "type": "object",
+        "x-eda-nokia-com": {
+          "ui-order-priority": 25,
+          "ui-title": "Deviations",
+          "ui-title-key": "deviations"
+        }
+      },
       "com.nokia.eda.qos.v1.Queue_metadata": {
         "properties": {
           "annotations": {
@@ -3802,6 +4614,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/AppGroup"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/AppGroup"
+                }
               }
             },
             "description": "OK"
@@ -3830,6 +4647,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/ResourceList"
                 }
@@ -3872,6 +4694,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UIResult"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/UIResult"
                 }
@@ -3935,6 +4762,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -3945,6 +4781,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
                 }
@@ -4009,6 +4850,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -4019,6 +4869,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
                 }
@@ -4083,6 +4938,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -4093,6 +4957,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
                 }
@@ -4122,18 +4991,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4143,6 +5043,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
                 }
@@ -4205,6 +5110,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -4224,6 +5138,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicyList"
                 }
@@ -4252,6 +5171,28 @@
         "operationId": "createQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -4274,6 +5215,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
                 }
@@ -4334,6 +5280,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -4361,6 +5312,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -4383,6 +5356,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -4459,6 +5437,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
+                }
               }
             },
             "description": "OK"
@@ -4482,6 +5465,28 @@
         "description": "patch a EgressPolicy",
         "operationId": "patchQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -4516,6 +5521,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
+                }
               }
             },
             "description": "OK"
@@ -4539,6 +5549,28 @@
         "description": "replace a EgressPolicy",
         "operationId": "replaceQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -4570,6 +5602,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.EgressPolicy"
                 }
@@ -4649,6 +5686,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -4670,8 +5712,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespaceEgresspolicys",
+        "parameters": [
+          {
+            "description": "name of the EgressPolicy",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified EgressPolicy resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced EgressPolicy.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/egresspolicys/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced EgressPolicy.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespaceEgresspolicys",
         "parameters": [
           {
@@ -4740,6 +5856,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -4755,7 +5876,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced EgressPolicy.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespaceEgresspolicys",
+        "parameters": [
+          {
+            "description": "name of the EgressPolicy to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced EgressPolicy.",
         "tags": [
           "apps"
         ]
@@ -4766,18 +5967,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -4787,6 +6019,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
                 }
@@ -4849,6 +6086,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -4868,6 +6114,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClassList"
                 }
@@ -4896,6 +6147,28 @@
         "operationId": "createQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -4918,6 +6191,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
                 }
@@ -4978,6 +6256,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -5005,6 +6288,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -5027,6 +6332,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -5103,6 +6413,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
+                }
               }
             },
             "description": "OK"
@@ -5126,6 +6441,28 @@
         "description": "patch a ForwardingClass",
         "operationId": "patchQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -5160,6 +6497,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
+                }
               }
             },
             "description": "OK"
@@ -5183,6 +6525,28 @@
         "description": "replace a ForwardingClass",
         "operationId": "replaceQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -5214,6 +6578,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.ForwardingClass"
                 }
@@ -5293,6 +6662,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -5314,8 +6688,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespaceForwardingclasss",
+        "parameters": [
+          {
+            "description": "name of the ForwardingClass",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified ForwardingClass resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced ForwardingClass.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/forwardingclasss/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced ForwardingClass.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespaceForwardingclasss",
         "parameters": [
           {
@@ -5384,6 +6832,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -5399,7 +6852,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced ForwardingClass.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespaceForwardingclasss",
+        "parameters": [
+          {
+            "description": "name of the ForwardingClass to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced ForwardingClass.",
         "tags": [
           "apps"
         ]
@@ -5410,18 +6943,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -5431,6 +6995,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
                 }
@@ -5493,6 +7062,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -5512,6 +7090,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicyList"
                 }
@@ -5540,6 +7123,28 @@
         "operationId": "createQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -5562,6 +7167,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
                 }
@@ -5622,6 +7232,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -5649,6 +7264,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -5671,6 +7308,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -5747,6 +7389,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
+                }
               }
             },
             "description": "OK"
@@ -5770,6 +7417,28 @@
         "description": "patch a IngressPolicy",
         "operationId": "patchQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -5804,6 +7473,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
+                }
               }
             },
             "description": "OK"
@@ -5827,6 +7501,28 @@
         "description": "replace a IngressPolicy",
         "operationId": "replaceQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -5858,6 +7554,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.IngressPolicy"
                 }
@@ -5937,6 +7638,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -5958,8 +7664,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespaceIngresspolicys",
+        "parameters": [
+          {
+            "description": "name of the IngressPolicy",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified IngressPolicy resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced IngressPolicy.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/ingresspolicys/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced IngressPolicy.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespaceIngresspolicys",
         "parameters": [
           {
@@ -6028,6 +7808,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -6043,7 +7828,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced IngressPolicy.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespaceIngresspolicys",
+        "parameters": [
+          {
+            "description": "name of the IngressPolicy to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced IngressPolicy.",
         "tags": [
           "apps"
         ]
@@ -6054,18 +7919,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6075,6 +7971,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
                 }
@@ -6137,6 +8038,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -6156,6 +8066,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
                 }
@@ -6184,6 +8099,28 @@
         "operationId": "createQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -6206,6 +8143,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
                 }
@@ -6266,6 +8208,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -6293,6 +8240,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -6315,6 +8284,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -6391,6 +8365,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
+                }
               }
             },
             "description": "OK"
@@ -6414,6 +8393,28 @@
         "description": "patch a PolicyAttachment",
         "operationId": "patchQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -6448,6 +8449,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
+                }
               }
             },
             "description": "OK"
@@ -6471,6 +8477,28 @@
         "description": "replace a PolicyAttachment",
         "operationId": "replaceQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -6502,6 +8530,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachment"
                 }
@@ -6581,6 +8614,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -6602,8 +8640,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespacePolicyattachments",
+        "parameters": [
+          {
+            "description": "name of the PolicyAttachment",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified PolicyAttachment resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced PolicyAttachment.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policyattachments/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced PolicyAttachment.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespacePolicyattachments",
         "parameters": [
           {
@@ -6672,6 +8784,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -6687,7 +8804,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced PolicyAttachment.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespacePolicyattachments",
+        "parameters": [
+          {
+            "description": "name of the PolicyAttachment to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced PolicyAttachment.",
         "tags": [
           "apps"
         ]
@@ -6698,18 +8895,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -6719,6 +8947,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
                 }
@@ -6781,6 +9014,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -6800,6 +9042,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
                 }
@@ -6828,6 +9075,28 @@
         "operationId": "createQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -6850,6 +9119,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
                 }
@@ -6910,6 +9184,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -6937,6 +9216,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -6959,6 +9260,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -7035,6 +9341,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
+                }
               }
             },
             "description": "OK"
@@ -7058,6 +9369,28 @@
         "description": "patch a PolicyDeployment",
         "operationId": "patchQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -7092,6 +9425,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
+                }
               }
             },
             "description": "OK"
@@ -7115,6 +9453,28 @@
         "description": "replace a PolicyDeployment",
         "operationId": "replaceQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -7146,6 +9506,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeployment"
                 }
@@ -7225,6 +9590,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -7246,8 +9616,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespacePolicydeployments",
+        "parameters": [
+          {
+            "description": "name of the PolicyDeployment",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified PolicyDeployment resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced PolicyDeployment.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/policydeployments/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced PolicyDeployment.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespacePolicydeployments",
         "parameters": [
           {
@@ -7316,6 +9760,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -7331,7 +9780,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced PolicyDeployment.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespacePolicydeployments",
+        "parameters": [
+          {
+            "description": "name of the PolicyDeployment to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced PolicyDeployment.",
         "tags": [
           "apps"
         ]
@@ -7342,18 +9871,49 @@
         "operationId": "deleteAllQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
           {
-            "description": "the namespace scope from which to perform the delete",
-            "in": "path",
-            "name": "namespace",
-            "required": true,
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
             "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
               "type": "string"
             }
           },
           {
             "description": "a label selector string to filter the set of CRs deleted based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the set of CRs deleted based on CR labels",
+            "in": "query",
             "name": "label-selector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "the namespace scope from which to perform the delete",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
             "schema": {
               "type": "string"
             }
@@ -7363,6 +9923,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
                 }
@@ -7425,6 +9990,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -7444,6 +10018,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
                 }
@@ -7472,6 +10051,28 @@
         "operationId": "createQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "in": "path",
             "name": "namespace",
             "required": true,
@@ -7494,6 +10095,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
                 }
@@ -7554,6 +10160,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue_DeletedResources"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue_DeletedResources"
+                }
               }
             },
             "description": "Returns list of deleted resource entries"
@@ -7581,6 +10192,28 @@
         "operationId": "deleteQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
           {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
+          {
             "description": "the namespace scope from which to perform the delete",
             "in": "path",
             "name": "namespace",
@@ -7603,6 +10236,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Status"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/Status"
                 }
@@ -7679,6 +10317,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
+                }
               }
             },
             "description": "OK"
@@ -7702,6 +10345,28 @@
         "description": "patch a Queue",
         "operationId": "patchQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -7736,6 +10401,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
+                }
               }
             },
             "description": "OK"
@@ -7759,6 +10429,28 @@
         "description": "replace a Queue",
         "operationId": "replaceQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
+          {
+            "description": "The detail level to keep in the transaction log for the transaction resulting from this request.",
+            "in": "query",
+            "name": "detailLevel",
+            "schema": {
+              "default": "standard",
+              "enum": [
+                "standard",
+                "detailed"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "If true, prevents the transaction resulting from this request from being bundled with others.",
+            "in": "query",
+            "name": "disableBatching",
+            "schema": {
+              "default": false,
+              "type": "boolean"
+            }
+          },
           {
             "in": "path",
             "name": "namespace",
@@ -7790,6 +10482,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.Queue"
                 }
@@ -7869,6 +10566,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceHistory"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceHistory"
+                }
               }
             },
             "description": "Returns the change history of the specified resource"
@@ -7890,8 +10592,82 @@
         ]
       }
     },
+    "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_targets": {
+      "get": {
+        "operationId": "getTargetsQosEdaNokiaComV1NamespaceQueues",
+        "parameters": [
+          {
+            "description": "name of the Queue",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope in which to operate",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/IntentTargets"
+                }
+              }
+            },
+            "description": "Returns the list of intent targets for the specified Queue resource."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Get intent targets for the specified namespaced Queue.",
+        "tags": [
+          "apps"
+        ]
+      }
+    },
     "/apps/qos.eda.nokia.com/v1/namespaces/{namespace}/queues/{name}/_topology": {
       "get": {
+        "deprecated": true,
+        "description": "Get the topology for the specified namespaced Queue.  This API is deprecated and the POST\nAPI should be used instead.",
         "operationId": "getTopologyQosEdaNokiaComV1NamespaceQueues",
         "parameters": [
           {
@@ -7960,6 +10736,11 @@
                 "schema": {
                   "$ref": "#/components/schemas/ResourceTopology"
                 }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
               }
             },
             "description": "Returns the topology of the specified resource"
@@ -7975,7 +10756,87 @@
             "description": "Details of an error in response to an API REST request."
           }
         },
-        "summary": "Get the topology for the specified namespaced Queue.",
+        "tags": [
+          "apps"
+        ]
+      },
+      "post": {
+        "operationId": "postTopologyQosEdaNokiaComV1NamespaceQueues",
+        "parameters": [
+          {
+            "description": "name of the Queue to retrieve",
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "the namespace scope from which to retrieve the result",
+            "in": "path",
+            "name": "namespace",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "client information for streaming request",
+            "in": "query",
+            "name": "eventclient",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "stream information for streaming request",
+            "in": "query",
+            "name": "stream",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/K8STopologyRequest"
+              }
+            }
+          },
+          "description": "the details of topology to retrieve",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              },
+              "application/yaml": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceTopology"
+                }
+              }
+            },
+            "description": "Returns the topology of the specified resource"
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Details of an error in response to an API REST request."
+          }
+        },
+        "summary": "Retrieve the topology for the specified namespaced Queue.",
         "tags": [
           "apps"
         ]
@@ -8021,6 +10882,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -8031,6 +10901,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyAttachmentList"
                 }
@@ -8095,6 +10970,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -8105,6 +10989,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.PolicyDeploymentList"
                 }
@@ -8169,6 +11058,15 @@
           {
             "description": "a label selector string to filter the results based on CR labels",
             "in": "query",
+            "name": "labelSelector",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "deprecated": true,
+            "description": "Deprecated: a label selector string to filter the results based on CR labels",
+            "in": "query",
             "name": "label-selector",
             "schema": {
               "type": "string"
@@ -8179,6 +11077,11 @@
           "200": {
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
+                }
+              },
+              "application/yaml": {
                 "schema": {
                   "$ref": "#/components/schemas/com.nokia.eda.qos.v1.QueueList"
                 }
